@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang='ru'>
+    <head>
+        <link rel="stylesheet" type="text/css" href="style.css">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
+        <link  rel="icon" type="image/x-icon" href="favicon.ico">
+    </head>
+    <body>
+        <div class="contentframe">
+            <div class="firstcollumn">
+
+                <div class="temperatureframe">
+                    Сейчас
+                    <div class="temperaturetuday" id="temperature">
+                        -25°C
+                    </div>
+                    <div class="line"></div>
+                    
+                    <div class="datemonth" id="dateDisplay"></div>
+                    <div class="sity">Северодвинск</div>
+                </div>
+
+                <div class="futureweatherframe">
+                    Сегодня
+                    <div class="futureweatherweekblock">
+                        <div class="futureweatherday">
+                            
+                            
+                        </div>
+                        <div class="futureweatherday">СР -25°C
+
+                        </div>
+                        <div class="futureweatherday">ЧТ -25°C<div>fuf</div>
+
+                        </div>
+                        <div class="futureweatherday">ПТ -25°C
+
+                        </div>
+                        <div class="futureweatherday">СБ -25°C
+
+                        </div>
+                        <div class="futureweatherday">ВС -25°C
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="secondcollumn">
+                <div class="weatherconditionframe">
+                    Состояние погоды
+                    <div class="airqualityframe">
+                        <div class="airquality">Качество воздуха:
+                            <span class="airQualityValue" id="airQualityValue"></span>
+                        </div>
+
+                    </div>
+
+                </div>
+                <div class="weekweatherframe">
+                    Прогноз на неделю
+                    <div class="footer">
+        
+                        <a class="et-hero-tab" href="#">
+                            <img class="mainimg" src="images/categories/main2.png" >
+                            25
+                        </a>
+                        <a class="et-hero-tab" href="#">
+                            <img class="mainimg" src="images/categories/studio2.png" >
+                            26
+                        </a>
+                        <a class="et-hero-tab" href="#">
+                            <img class="mainimg" src="images/categories/ticket2.png" >
+                            27
+                        </a>
+                        <a class="et-hero-tab" href="#">
+                            <img class="mainimg" src="images/categories/profile2.png" >
+                            28
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+    <script>
+        const days = ['Sunday', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота'];
+        const months = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'];
+
+        const today = new Date();
+        const dayOfWeek = days[today.getDay()];
+        const dayOfMonth = today.getDate();
+        const month = months[today.getMonth()];
+        
+
+        const dateDisplay = document.getElementById('dateDisplay');
+        dateDisplay.textContent = dayOfWeek + ' ' + dayOfMonth + ', ' + month ;
+
+        // Запрос к API OpenWeatherMap
+        const api_key = '16e6d89d1a356ebab71e8feb97dc49c0'; // Замените на свой API ключ
+        const city = 'Severodvinsk';
+        const apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${api_key}`;
+        const apiURL =`http://api.openweathermap.org/data/2.5/air_pollution?lat={lat}&lon={lon}&appid={API key}`
+
+
+        fetch(apiUrl)
+            .then(response => response.json())
+            .then(data => {
+                const temperatureDisplay = document.getElementById('temperature');
+                const roundedTemperature = Math.round(data.main.temp); // Округляем температуру до ближайшего целого числа
+                temperatureDisplay.textContent = roundedTemperature + '°C';
+            
+                // Определение времени суток
+                const currentHour = new Date().getHours();
+                let timeOfDay;
+                if (currentHour >= 6 && currentHour < 18) {
+                    timeOfDay = 'day';
+                } else {
+                    timeOfDay = 'evening';
+                }
+
+                // Определение погоды и установка соответствующего фона
+                const weatherCondition = data.weather[0].main;
+                const body = document.getElementsByTagName('body')[0];
+
+                if (weatherCondition === 'Clear') {
+                    if (timeOfDay === 'day') {
+                        body.style.backgroundImage = "url('images/clearsky.jpg')";
+                    } else {
+                        body.style.backgroundImage = "url('images/clearsky.jpg')";
+                    }
+                } 
+                else if (weatherCondition === 'Rain') {
+                    if (timeOfDay === 'day') {
+                        body.style.backgroundImage = "url('images/rain.jpg')";
+                    } else {
+                        body.style.backgroundImage = "url('images/rainevening.jpg')";
+                    }
+                } 
+                else if (weatherCondition === 'Clouds') {
+                    if (timeOfDay === 'day') {
+                        body.style.backgroundImage = "url('images/clouds.jpg')";
+                    } else {
+                        body.style.backgroundImage = "url('images/cloudsevening.jpg')";
+                    }
+                }
+                else if (weatherCondition === 'Snow') {
+                    if (timeOfDay === 'day') {
+                        body.style.backgroundImage = "url('images/clearsky.jpg')";
+                    } else {
+                        body.style.backgroundImage = "url('images/clearsky.jpg')";
+                    }
+                }
+                else if (weatherCondition === 'Thunderstorm') {
+                    if (timeOfDay === 'day') {
+                        body.style.backgroundImage = "url('images/clearsky.jpg')";
+                    } else {
+                        body.style.backgroundImage = "url('images/clearsky.jpg')";
+                    }
+                }
+                else if (weatherCondition === 'Drizzle') {
+                    if (timeOfDay === 'day') {
+                        body.style.backgroundImage = "url('images/clearsky.jpg')";
+                    } else {
+                        body.style.backgroundImage = "url('images/clearsky.jpg')";
+                    }
+                }
+
+                const apiKey = 'f3e3274f47ac4ea790d5675e13641b6d';
+                
+                const geocodingUrl = `https://api.opencagedata.com/geocode/v1/json?q=${encodeURIComponent(city)}&key=${apiKey}`;
+
+                fetch(geocodingUrl)
+        .then(response => response.json())
+        .then(geocodingData => {
+          const latitude = geocodingData.results[0].geometry.lat;
+          const longitude = geocodingData.results[0].geometry.lng;
+
+          const airPollutionUrl = `https://api.openweathermap.org/data/2.5/air_pollution?lat=${latitude}&lon=${longitude}&appid=${api_key}`;
+            
+          fetch(airPollutionUrl)
+            .then(response => response.json())
+            .then(airPollutionData => {
+              const airQualityElement = document.getElementById('airQualityValue');
+              const airQualityValue = airPollutionData.list[0].main.aqi;
+
+              if (airQualityValue === 1) {
+                airQualityElement.textContent = 'Отличное';
+              } else if (airQualityValue === 2) {
+                airQualityElement.textContent = 'Хорошее';
+              } else if (airQualityValue === 3) {
+                airQualityElement.textContent = 'Удовлетворительное';
+              } else if (airQualityValue === 4) {
+                airQualityElement.textContent = 'Плохое';
+              } else if (airQualityValue === 5) {
+                airQualityElement.textContent = 'Очень плохое';
+              } else {
+                airQualityElement.textContent = airQualityValue;
+              }
+              console.log('Качество воздуха', airPollutionData)
+            })
+            
+            .catch(error => {
+              console.error('Error fetching air pollution data:', error);
+            });
+        })
+        .catch(error => {
+          console.error('Error fetching geocoding data:', error);
+        });
+    
+                
+                console.log('Текущая погода:', data.weather[0].main); // Вывод основного состояния погоды
+                console.log('Описание:', data.weather[0].description); // Вывод более подробного описания погоды 
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+            });
+            
+
+    </script>
+</html>
